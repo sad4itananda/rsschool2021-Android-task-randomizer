@@ -1,17 +1,30 @@
 package com.rsschool.android2021
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.addCallback
 import androidx.fragment.app.Fragment
+import java.lang.NumberFormatException
 
 class FirstFragment : Fragment() {
 
     private var generateButton: Button? = null
     private var previousResult: TextView? = null
+    private var min: EditText? = null
+    private var max: EditText? = null
+    private var routeToSecondFragment: RouteToSecondFragment? = null
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        routeToSecondFragment = context as RouteToSecondFragment
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -30,10 +43,26 @@ class FirstFragment : Fragment() {
         previousResult?.text = "Previous result: ${result.toString()}"
 
         // TODO: val min = ...
+        min = view.findViewById(R.id.min_value)
         // TODO: val max = ...
+        max = view.findViewById(R.id.max_value)
 
         generateButton?.setOnClickListener {
             // TODO: send min and max to the SecondFragment
+
+            try {
+                val minNum = min?.text.toString().toInt()
+                val maxNum = max?.text.toString().toInt()
+
+                if (minNum < maxNum) {
+                    routeToSecondFragment?.routeToSecondFragment(minNum, maxNum)
+                } else {
+                    Toast.makeText(context, "Error: Check Numbers", Toast.LENGTH_LONG).show()
+                }
+            } catch (e:NumberFormatException) {
+                Toast.makeText(context, "Error: Check Fields", Toast.LENGTH_LONG).show()
+            }
+
         }
     }
 
